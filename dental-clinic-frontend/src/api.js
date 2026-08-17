@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://dental-clinic-kzp9.onrender.com/api',
 });
 
 // Automatically append JWT token to requests if available
@@ -23,4 +23,5 @@ export const loginAdmin = (credentials) => API.post('/auth/login', credentials);
 export const fetchAppointments = () => API.get('/appointments');
 export const updateAppointmentStatus = (id, status) => API.patch(`/appointments/${id}/status`, { status });
 
+export const fetchBookedSlots = (doctorId, date) => API.get(`/appointments/booked-slots?doctor_id=${doctorId}&date=${date}`);
 export default API;
