@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Analytics } from "@vercel/analytics/react"
 import BookingForm from './components/BookingForm';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
