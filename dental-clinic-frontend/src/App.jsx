@@ -1,14 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BookingForm from './components/BookingForm';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 
 function App() {
+  const [view, setView] = useState('client'); // 'client' or 'admin'
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem('adminToken')
+  );
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    setIsAuthenticated(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <header className="max-w-2xl mx-auto mb-6 text-center">
-        <h1 className="text-3xl font-extrabold text-blue-900">Dental Care Clinic</h1>
-        <p className="text-gray-600 mt-1">Schedule your visit with our specialist doctors</p>
-      </header>
-      <BookingForm />
+      <nav className="max-w-6xl mx-auto flex justify-between items-center mb-8 border-b border-gray-200 pb-4">
+        <h1 className="text-xl font-bold text-blue-900">Dental Clinic System</h1>
+        <div className="flex gap-4">
+          <button
+            onClick={() => setView('client')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              view === 'client' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            Client Booking
+          </button>
+          <button
+            onClick={() => setView('admin')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              view === 'admin' ? 'bg-slate-900 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            Admin Panel
+          </button>
+        </div>
+      </nav>
+
+      <main>
+        {view === 'client' && <BookingForm />}
+        {view === 'admin' && (
+          isAuthenticated ? (
+            <AdminDashboard onLogout={handleLogout} />
+          ) : (
+            <AdminLogin onLoginSuccess={() => setIsAuthenticated(true)} />
+          )
+        )}
+      </main>
     </div>
   );
 }
