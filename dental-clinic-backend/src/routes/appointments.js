@@ -81,4 +81,28 @@ router.patch('/:id/status', verifyAdminToken, async (req, res) => {
   }
 });
 
+// GET /api/appointments/booked-slots?doctor_id=...&date=YYYY-MM-DD
+router.get('/booked-slots', async (req, res) => {
+  const { doctor_id, date } = req.query;
+
+  if (!doctor_id || !date) {
+    return res.status(400).json({ error: 'doctor_id and date query params are required' });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      `SELECT appointment_time FROM appointments 
+       WHERE doctor_id = $1 AND appointment_date = $2 AND status != 'cancelled'`,
+      [doctor_id, date]
+    );
+
+    // Extract time strings into an array
+    const bookedTimes = rows.map((r) => r.appointment_time);
+    res.json(bookedTimes);
+  } catch (error) {
+    console.error('Error fetching booked slots:', error);
+    res.status(500).json({ error: 'Server error fetching slot availability' });
+  }
+});
+
 module.exports = router;
