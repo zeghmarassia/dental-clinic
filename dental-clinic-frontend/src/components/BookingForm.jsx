@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchServices, fetchDoctors, createAppointment } from '../api';
+import { fetchServices, fetchDoctors, createAppointment, fetchBookedSlots } from '../api';
 
 export default function BookingForm() {
   const [services, setServices] = useState([]);
@@ -20,6 +20,19 @@ export default function BookingForm() {
     fetchServices().then((res) => setServices(res.data)).catch(console.error);
     fetchDoctors().then((res) => setDoctors(res.data)).catch(console.error);
   }, []);
+
+  // Predefined working hours array
+const TIME_SLOTS = ['09:00:00', '10:00:00', '11:00:00', '13:00:00', '14:00:00', '15:00:00'];
+const [bookedSlots, setBookedSlots] = useState([]);
+
+// Fetch occupied slots whenever doctor or date changes
+useEffect(() => {
+  if (formData.doctor_id && formData.appointment_date) {
+    fetchBookedSlots(formData.doctor_id, formData.appointment_date)
+      .then((res) => setBookedSlots(res.data))
+      .catch(console.error);
+  }
+}, [formData.doctor_id, formData.appointment_date]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,26 +94,48 @@ export default function BookingForm() {
           </select>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-            <input
-              type="date"
-              required
-              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              value={formData.appointment_date}
-              onChange={(e) => setFormData({ ...formData, appointment_date: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-            <input
-              type="time"
-              required
-              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              value={formData.appointment_time}
-              onChange={(e) => setFormData({ ...formData, appointment_time: e.target.value })}
-            />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+          <input
+            type="date"
+            required
+            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            value={formData.appointment_date}
+            onChange={(e) => setFormData({ ...formData, appointment_date: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Select Time Slot</label>
+          <div className="grid grid-cols-3 gap-2">
+            {TIME_SLOTS.map((slot) => {
+              const isBooked = bookedSlots.some((bookedSlot) => bookedSlot.appointment_time === slot);
+              return (
+                <label
+                  key={slot}
+                  className={`flex items-center justify-center p-3 border-2 rounded-lg cursor-pointer transition duration-200 ${
+                    isBooked
+                      ? 'bg-gray-200 border-gray-300 cursor-not-allowed opacity-60'
+                      : formData.appointment_time === slot
+                      ? 'bg-blue-500 border-blue-500 text-white'
+                      : 'bg-white border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="time_slot"
+                    value={slot}
+                    checked={formData.appointment_time === slot}
+                    disabled={isBooked}
+                    onChange={(e) => setFormData({ ...formData, appointment_time: e.target.value })}
+                    className="mr-2"
+                  />
+                  <span className={`font-medium ${isBooked ? 'line-through text-gray-500' : ''}`}>
+                    {slot.slice(0, 5)}
+                  </span>
+                </label>
+              );
+            })}
           </div>
         </div>
 
