@@ -34,27 +34,21 @@ useEffect(() => {
   }
 }, [formData.doctor_id, formData.appointment_date]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setError('');
+const [bookingCode, setBookingCode] = useState('');
 
-    try {
-      const res = await createAppointment(formData);
-      setMessage(res.data.message);
-      setFormData({
-        service_id: '',
-        doctor_id: '',
-        appointment_date: '',
-        appointment_time: '09:00:00',
-        client_name: '',
-        client_email: '',
-        client_phone: '',
-      });
-    } catch (err) {
-      setError(err.response?.data?.error || 'Failed to submit appointment.');
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setMessage('');
+  setError('');
+
+  try {
+    const res = await createAppointment(formData);
+    setMessage(res.data.message);
+    setBookingCode(res.data.lookup_code); // Save returned code
+  } catch (err) {
+    setError(err.response?.data?.error || 'Failed to submit appointment.');
+  }
+};
 
   return (
     <div className="max-w-2xl mx-auto my-10 p-6 bg-white shadow-lg rounded-xl border border-gray-100">
@@ -62,7 +56,13 @@ useEffect(() => {
 
       {message && <div className="p-3 mb-4 text-green-700 bg-green-100 rounded-lg">{message}</div>}
       {error && <div className="p-3 mb-4 text-red-700 bg-red-100 rounded-lg">{error}</div>}
-
+      {bookingCode && (
+  <div className="p-4 mb-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
+    <p className="text-sm text-blue-800">Your Unique Booking Code:</p>
+    <p className="text-2xl font-bold tracking-widest text-blue-900 my-1">{bookingCode}</p>
+    <p className="text-xs text-blue-600">Save this code to check or cancel your appointment later.</p>
+  </div>
+)}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Select Service</label>

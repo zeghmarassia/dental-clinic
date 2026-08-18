@@ -46,6 +46,19 @@ CREATE TABLE IF NOT EXISTS appointments (
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'cancelled')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add lookup_code column
+ALTER TABLE appointments 
+ADD COLUMN IF NOT EXISTS lookup_code VARCHAR(10) UNIQUE;
+
+-- Populate existing rows that don't have a code yet
+UPDATE appointments 
+SET lookup_code = UPPER(SUBSTRING(MD5(RANDOM()::TEXT) FROM 1 FOR 6))
+WHERE lookup_code IS NULL;
+
+-- Make it NOT NULL for future entries
+ALTER TABLE appointments 
+ALTER COLUMN lookup_code SET NOT NULL;
 `;
 
 const initDb = async () => {

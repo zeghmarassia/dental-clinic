@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/react"
 import BookingForm from './components/BookingForm';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
+import ClientLookup from './components/ClientLookup';
 
 function App() {
   const [view, setView] = useState('client'); // 'client' or 'admin'
@@ -29,6 +30,14 @@ function App() {
             Client Booking
           </button>
           <button
+  onClick={() => setView('lookup')}
+  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+    view === 'lookup' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+  }`}
+>
+  My Appointment
+</button>
+          <button
             onClick={() => setView('admin')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               view === 'admin' ? 'bg-slate-900 text-white' : 'text-gray-600 hover:bg-gray-100'
@@ -41,6 +50,7 @@ function App() {
 
       <main>
         {view === 'client' && <BookingForm />}
+        {view === 'lookup' && <ClientLookup />}
         {view === 'admin' && (
           isAuthenticated ? (
             <AdminDashboard onLogout={handleLogout} />
