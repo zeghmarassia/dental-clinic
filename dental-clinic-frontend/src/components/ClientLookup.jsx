@@ -98,6 +98,20 @@ export default function ClientLookup() {
 
       {appointment && (
         <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-xs text-gray-500 block">Booking Code</span>
+              <span className="font-semibold text-gray-800 tracking-wider">{code}</span>
+            </div>
+            <div>
+              <button
+                onClick={() => { navigator.clipboard?.writeText(code); setMessage('Code copied to clipboard.'); setTimeout(() => setMessage(''), 2000); }}
+                className="px-3 py-1 text-xs bg-slate-100 rounded hover:bg-slate-200"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
           <div className="flex justify-between items-center">
             <span className="text-sm font-semibold text-gray-500">Status:</span>
             {getStatusBadge(appointment.status)}
