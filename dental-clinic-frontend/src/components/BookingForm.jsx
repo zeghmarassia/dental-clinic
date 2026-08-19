@@ -50,9 +50,16 @@ const handleSubmit = async (e) => {
   }
 };
 
+  const selectedService = services.find((s) => String(s.id) === String(formData.service_id));
+  const selectedDoctor = doctors.find((d) => String(d.id) === String(formData.doctor_id));
+  const isFormValid = formData.service_id && formData.doctor_id && formData.appointment_date && formData.appointment_time && formData.client_name && formData.client_email && formData.client_phone;
+
   return (
-    <div className="max-w-2xl mx-auto my-10 p-6 bg-white shadow-lg rounded-xl border border-gray-100">
+    <div className="max-w-4xl mx-auto my-10 p-6 bg-white shadow-lg rounded-xl border border-gray-100">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Book an Appointment</h2>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
 
       {message && <div className="p-3 mb-4 text-green-700 bg-green-100 rounded-lg">{message}</div>}
       {error && <div className="p-3 mb-4 text-red-700 bg-red-100 rounded-lg">{error}</div>}
@@ -178,11 +185,47 @@ const handleSubmit = async (e) => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white font-medium py-3 rounded-lg hover:bg-blue-700 transition duration-200"
+          disabled={!isFormValid}
+          className={`w-full ${isFormValid ? 'bg-blue-600 hover:bg-blue-700' : 'bg-slate-200 cursor-not-allowed'} text-white font-medium py-3 rounded-lg transition duration-200`}
         >
-          Confirm & Book Appointment
+          {isFormValid ? 'Confirm & Book Appointment' : 'Complete all fields to continue'}
         </button>
       </form>
+        </div>
+
+        {/* Summary Card */}
+        <aside className="hidden lg:block lg:col-span-1 p-4 bg-slate-50 rounded-lg border border-gray-100">
+          <h3 className="text-sm font-semibold text-gray-700">Appointment Summary</h3>
+          <div className="mt-3 text-sm text-gray-600 space-y-3">
+            <div>
+              <div className="text-xs text-gray-500">Service</div>
+              <div className="font-medium text-gray-800">{selectedService ? `${selectedService.name}` : 'Not selected'}</div>
+              {selectedService && <div className="text-xs text-gray-500">Price: ${selectedService.price}</div>}
+            </div>
+
+            <div>
+              <div className="text-xs text-gray-500">Doctor</div>
+              <div className="font-medium text-gray-800">{selectedDoctor ? `${selectedDoctor.name}` : 'Not selected'}</div>
+              {selectedDoctor && <div className="text-xs text-gray-500">{selectedDoctor.specialty}</div>}
+            </div>
+
+            <div>
+              <div className="text-xs text-gray-500">Date & Time</div>
+              <div className="font-medium text-gray-800">{formData.appointment_date ? new Date(formData.appointment_date).toLocaleDateString() : 'Not selected'}</div>
+              <div className="text-xs text-gray-500">{formData.appointment_time ? formData.appointment_time.slice(0,5) : ''}</div>
+            </div>
+
+            <div>
+              <div className="text-xs text-gray-500">Slots unavailable</div>
+              <div className="font-medium text-gray-800">{bookedSlots.length} booked</div>
+            </div>
+
+            <div className="pt-3">
+              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="w-full bg-white border border-gray-200 text-gray-800 py-2 rounded-lg">Need help?</button>
+            </div>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

@@ -10,6 +10,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem('adminToken')
   );
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -56,15 +57,40 @@ function App() {
             </button>
           </nav>
 
-          <button
-            onClick={() => setView('book')}
-            className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/30 transition flex items-center gap-2"
-          >
-            <Calendar className="w-4 h-4" />
-            Book Visit
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setView('book')}
+              className="hidden sm:inline-flex bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/30 transition flex items-center gap-2"
+            >
+              <Calendar className="w-4 h-4" />
+              Book Visit
+            </button>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen((s) => !s)}
+              className="md:hidden p-2 rounded-lg bg-slate-100 hover:bg-slate-200 transition"
+              aria-label="Toggle menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-700">
+                <path d="M3 12h18M3 6h18M3 18h18"></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* Mobile menu panel */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-b border-slate-100 shadow-sm">
+          <div className="px-6 py-4 flex flex-col gap-3">
+            <button onClick={() => { setView('home'); setMobileMenuOpen(false); }} className="text-left text-slate-700 py-2">Home</button>
+            <button onClick={() => { setView('lookup'); setMobileMenuOpen(false); }} className="text-left text-slate-700 py-2">My Booking</button>
+            <button onClick={() => { setView('admin'); setMobileMenuOpen(false); }} className="text-left text-slate-700 py-2">Admin Portal</button>
+            <button onClick={() => { setView('book'); setMobileMenuOpen(false); }} className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">Book Visit</button>
+          </div>
+        </div>
+      )}
 
       {/* --- Main Content Routing --- */}
       <main className="flex-1">
@@ -103,22 +129,22 @@ function App() {
 
                 {/* Hero Feature Cards */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-3">
+                  <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-3 shadow-md transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-2xl">
                     <Clock className="w-8 h-8 text-blue-600" />
                     <h3 className="font-bold text-slate-900">Zero Wait Times</h3>
                     <p className="text-xs text-slate-500">Instant online scheduling aligned with doctor availability.</p>
                   </div>
-                  <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-3 mt-6">
+                  <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-3 shadow-md transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-2xl">
                     <UserCheck className="w-8 h-8 text-blue-600" />
                     <h3 className="font-bold text-slate-900">Certified Specialists</h3>
                     <p className="text-xs text-slate-500">Board-certified doctors across orthodontic & endodontic care.</p>
                   </div>
-                  <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-3">
+                  <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-3 shadow-md transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-2xl">
                     <Award className="w-8 h-8 text-blue-600" />
                     <h3 className="font-bold text-slate-900">Modern Tech</h3>
                     <p className="text-xs text-slate-500">Painless procedures with state-of-the-art equipment.</p>
                   </div>
-                  <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-3 mt-6">
+                  <div className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-3 shadow-md transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-2xl">
                     <PhoneCall className="w-8 h-8 text-blue-600" />
                     <h3 className="font-bold text-slate-900">Easy Lookup</h3>
                     <p className="text-xs text-slate-500">Manage or cancel your appointments anytime with a code.</p>

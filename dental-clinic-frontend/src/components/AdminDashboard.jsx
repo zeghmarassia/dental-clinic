@@ -109,7 +109,7 @@ export default function AdminDashboard({ onLogout }) {
                       <button
                         onClick={() => handleStatusChange(app.id, 'rejected')}
                         disabled={app.status === 'rejected'}
-                        className="px-2.5 py-1 text-xs font-medium text-white bg-yellow-600 rounded hover:bg-yellow-700 disabled:opacity-40"
+                        className="px-2.5 py-1 text-xs font-medium text-white bg-orange-500 rounded hover:bg-orange-600 disabled:opacity-40"
                       >
                         Reject
                       </button>
